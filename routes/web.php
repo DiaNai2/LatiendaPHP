@@ -90,3 +90,8 @@ Route::get("paises", function(){
     echo "<hr/>";*/
 
 });
+
+Route::get('prueba', function(){
+    return view('productos.new');
+
+});
