@@ -1,6 +1,11 @@
 @extends('layouts.menu')
 
 @section('contenido')
+@if(session('mensajito'))
+<div class="row">
+    <p>{{session('mensajito')}}</p>
+</div>
+@endif
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="row">
     <h1 class="blue-text text-darken-4">Nuevo producto</h1>
@@ -19,12 +24,14 @@
         class="validate"
         placeholder="nombre de producto">
         <label for="nombre">nombre de producto</label>
+        <strong>{{ $errors->first('nombre') }}</strong>
     </div>
 </div>
 <div class="row">
     <div class="col s8 input-fild">
     <textarea name="desc" id="desc" class="materialize-textarea" placeholder="descripcion de producto"></textarea>
     <label for="desc">descripción</label>
+        <strong>{{ $errors->first('desc') }}</strong>
     </div>
 </div>
 <div class="row">
@@ -35,6 +42,7 @@
         name="precio"
         placeholder="precio de producto">
         <label for="precio">Precio</label>
+        <strong>{{ $errors->first('precio') }}</strong>
     </div>
 </div>
 
@@ -49,6 +57,8 @@
         </div>
 
     </div>
+    
+    <strong>{{ $errors->first('imagen') }}</strong>
 </div>
 
 <div class="row">
@@ -64,11 +74,14 @@
 <div class="row">
     <div class="cols8 input-field">
         <select name="categoria" id="categoria">
+            <option value="">Seleccione categoria</option>
             @foreach($categorias as $categoria)
             <option value="{{$categoria->id}}">{{$categoria->nombre}}</option>
             @endforeach
         </select>
         <label >seleccione Categoria</label>
+        
+        <strong>{{ $errors->first('categoria') }}</strong>
 </div>
 </div>
 <button class="btn waves-effect waves-light" type="submit" name="action">Guardar producto

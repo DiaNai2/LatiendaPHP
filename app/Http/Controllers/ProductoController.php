@@ -7,6 +7,9 @@ use App\Models\Categoria;
 use App\Models\Marca;
 use Illuminate\Http\Request;
 
+//dependencia para el validador 
+use Illuminate\Support\Facades\Validator;
+
 class ProductoController extends Controller
 {
     /**
@@ -44,7 +47,41 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        //crear el objeto uplodedfile 
+
+        //validacion de datos de formulario
+        //1. establecer las reglas de valiodacion a aplicar
+        //para la 'input data' 
+        $reglas=[
+            "nombre" => 'required|alpha|unique:productos,nombre',
+            "desc"  =>  'required|min:10|max:20',
+            "precio"=> 'required|numeric',
+            "imagen" => 'required|image',
+            "categoria"=> 'required'
+        ];
+        $mensajes=[
+            "required"=>"compo obligatorio",
+            "alpha"=>"solo letras",
+            "numeric"=>"solo numeros",
+            "image"=> "debe ser un archivo imagen",
+            "min"=> "minimo : value",
+            
+        ];
+        //2. ctrear el objeto validador
+        $v = Validator::make($request->all(), $reglas, $mensajes);
+
+        //3. validar
+        //fails() retorna
+        //true: si la validacion falla
+        //false: si los datos son validos
+        if($v->fails()){
+            //validacion incorrecta
+            //mostrar la vista new
+            //llevando los errores
+            return redirect('productos/create')
+            ->withErrors($v);
+        }else{
+            //validacion correcta 
+             //crear el objeto uplodedfile 
         $archivo=$request->imagen;
         //campturar nombre ""original del archivo
         $nombre_archivo= $archivo->getClientOriginalName();
@@ -62,6 +99,12 @@ class ProductoController extends Controller
         $producto->categoria_id= $request->categoria;
         $producto->save();
         echo "producto registrado";
+        //redirreccion al formulario 
+        //llevando un mensaje de exito 
+        return redirect('productos/create')
+            ->with("mensajito", "produto registrado");
+        }
+       
     }
 
     /**
